@@ -43,11 +43,13 @@ public class ServerController {
         return ResponseEntity.ok("Metadata uploaded successfully for photoId: " + request.getTitle());
     }
 
-    @GetMapping("/connect")
+    @GetMapping("/health")
     public ResponseEntity<String> connect() throws IOException {
         log.info("Received connection request");
-        sshConnectionService.connect();
-        return ResponseEntity.ok("Connection successful");
+        if (sshConnectionService.healthStatus()) {
+            return ResponseEntity.ok("Connection is healthy");
+        }
+        return ResponseEntity.internalServerError().body("Connection to SSH server is not healthy");
     }
 
     @PostMapping("/view/{photoId}")
