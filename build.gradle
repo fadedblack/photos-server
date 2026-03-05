@@ -21,6 +21,10 @@ configurations {
 	}
 }
 
+tasks.named('spotlessCheck').configure {
+	dependsOn('spotlessApply')
+}
+
 repositories {
 	mavenCentral()
 }
