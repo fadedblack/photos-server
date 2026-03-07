@@ -25,8 +25,10 @@ public class PhotoStorageService {
         String photoName = sanitizePhotoName(photo.getPhotoName());
         String command = "mkdir -p ~/server-storage && cat > ~/server-storage/" + photoName;
         SshCommandResult result = sshCommandExecutor.execute(command, photo.getImageData());
-        if ((result.exitStatus() != null && result.exitStatus() != 0) || !result.stderr().isBlank()) {
-            throw new IOException("Failed to upload photo '" + photoName + "': " + result.stderr().trim());
+        if ((result.exitStatus() != null && result.exitStatus() != 0)
+                || !result.stderr().isBlank()) {
+            throw new IOException("Failed to upload photo '" + photoName + "': "
+                    + result.stderr().trim());
         }
     }
 
@@ -34,8 +36,10 @@ public class PhotoStorageService {
         String safePhotoId = sanitizePhotoName(photoId);
         String command = "cat ~/server-storage/" + safePhotoId;
         SshCommandResult result = sshCommandExecutor.execute(command, null);
-        if ((result.exitStatus() != null && result.exitStatus() != 0) || !result.stderr().isBlank()) {
-            throw new IOException("Failed to read photo '" + safePhotoId + "': " + result.stderr().trim());
+        if ((result.exitStatus() != null && result.exitStatus() != 0)
+                || !result.stderr().isBlank()) {
+            throw new IOException("Failed to read photo '" + safePhotoId + "': "
+                    + result.stderr().trim());
         }
         return result.stdout();
     }

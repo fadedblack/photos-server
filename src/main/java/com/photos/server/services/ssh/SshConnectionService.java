@@ -1,7 +1,6 @@
-package com.photos.server.services;
+package com.photos.server.services.ssh;
 
 import java.io.IOException;
-import com.photos.server.services.ssh.SshSessionManager;
 import org.springframework.stereotype.Service;
 
 @Service

@@ -4,7 +4,7 @@ import com.photos.server.dto.Photo;
 import com.photos.server.dto.request.MetadataRequestBody;
 import com.photos.server.dto.request.PhotoRequestBody;
 import com.photos.server.services.PhotoStorageService;
-import com.photos.server.services.SshConnectionService;
+import com.photos.server.services.ssh.SshConnectionService;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

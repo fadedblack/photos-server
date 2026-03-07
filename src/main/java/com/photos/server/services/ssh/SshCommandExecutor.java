@@ -26,8 +26,8 @@ public class SshCommandExecutor {
         ClientSession session = sshSessionManager.getActiveSession();
 
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-             ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
-             ClientChannel channel = session.createExecChannel(command)) {
+                ByteArrayOutputStream errorStream = new ByteArrayOutputStream();
+                ClientChannel channel = session.createExecChannel(command)) {
             channel.setOut(outputStream);
             channel.setErr(errorStream);
             channel.open().verify(TIMEOUT_SECONDS, TimeUnit.SECONDS);

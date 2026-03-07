@@ -1,8 +1,8 @@
 package com.photos.server.services.ssh;
 
+import jakarta.annotation.PreDestroy;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-import jakarta.annotation.PreDestroy;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
@@ -27,7 +27,7 @@ public class SshSessionManager {
     @Value("${ssh.password}")
     private String password;
 
-    @Value("${ssh.host}")
+    @Value("${ssh.hostname}")
     private String host;
 
     public synchronized void connect() throws IOException {
@@ -40,7 +40,10 @@ public class SshSessionManager {
         sshClient = SshClient.setUpDefaultClient();
         sshClient.start();
         try {
-            session = sshClient.connect(username, host, port).verify(TIMEOUT_SECONDS, TimeUnit.SECONDS).getSession();
+            session = sshClient
+                    .connect(username, host, port)
+                    .verify(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                    .getSession();
             session.addPasswordIdentity(password);
             session.auth().verify(TIMEOUT_SECONDS, TimeUnit.SECONDS);
             log.info("SSH connection established successfully to host: {}", host);
