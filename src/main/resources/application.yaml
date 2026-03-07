@@ -9,4 +9,4 @@ spring:
       max-request-size: 10MB
 
 ssh:
-  host: 192.168.1.7
+  host: 192.168.1.14

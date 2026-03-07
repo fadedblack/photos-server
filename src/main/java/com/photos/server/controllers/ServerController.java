@@ -34,6 +34,7 @@ public class ServerController {
             throws IOException {
         Photo photo = Photo.from(requestBody);
         log.info("Received photo upload request for photo: {}", photo.getPhotoName());
+        sshConnectionService.uploadPhoto(photo);
         return ResponseEntity.ok("Photo uploaded successfully for photo: " + requestBody.getPhotoName());
     }
 
