@@ -3,10 +3,10 @@ package com.photos.server.controllers;
 import com.photos.server.dto.Photo;
 import com.photos.server.dto.request.MetadataRequestBody;
 import com.photos.server.dto.request.PhotoRequestBody;
+import com.photos.server.services.PhotoStorageService;
 import com.photos.server.services.SshConnectionService;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,10 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping(("/inkeet/server/photos"))
 public class ServerController {
 
-    @Autowired
+    private final PhotoStorageService photoStorageService;
     private final SshConnectionService sshConnectionService;
 
-    public ServerController(SshConnectionService sshConnectionService) {
+    public ServerController(PhotoStorageService photoStorageService, SshConnectionService sshConnectionService) {
+        this.photoStorageService = photoStorageService;
         this.sshConnectionService = sshConnectionService;
     }
 
@@ -34,7 +35,7 @@ public class ServerController {
             throws IOException {
         Photo photo = Photo.from(requestBody);
         log.info("Received photo upload request for photo: {}", photo.getPhotoName());
-        sshConnectionService.uploadPhoto(photo);
+        photoStorageService.uploadPhoto(photo);
         return ResponseEntity.ok("Photo uploaded successfully for photo: " + requestBody.getPhotoName());
     }
 
@@ -56,6 +57,6 @@ public class ServerController {
     @PostMapping("/view/{photoId}")
     public ResponseEntity<byte[]> viewPhoto(@PathVariable String photoId) throws IOException {
         log.info("Received view request for photoId: {}", photoId);
-        return ResponseEntity.ok(sshConnectionService.viewPhoto(photoId));
+        return ResponseEntity.ok(photoStorageService.viewPhoto(photoId));
     }
 }
