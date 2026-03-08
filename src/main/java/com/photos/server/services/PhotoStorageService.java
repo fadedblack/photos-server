@@ -5,9 +5,11 @@ import com.photos.server.services.ssh.SshCommandExecutor;
 import com.photos.server.services.ssh.SshCommandResult;
 import java.io.IOException;
 import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class PhotoStorageService {
 
     private static final Pattern SAFE_PHOTO_NAME = Pattern.compile("[A-Za-z0-9._-]+");
@@ -23,6 +25,12 @@ public class PhotoStorageService {
         }
 
         String photoName = sanitizePhotoName(photo.getPhotoName());
+
+        if (doesPhotoExist(photoName)) {
+            log.info("Photo '{}' already exists. Skipping upload.", photoName);
+            return;
+        }
+
         String command = "mkdir -p ~/server-storage && cat > ~/server-storage/" + photoName;
         SshCommandResult result = sshCommandExecutor.execute(command, photo.getImageData());
         if ((result.exitStatus() != null && result.exitStatus() != 0)
@@ -30,6 +38,13 @@ public class PhotoStorageService {
             throw new IOException("Failed to upload photo '" + photoName + "': "
                     + result.stderr().trim());
         }
+    }
+
+    private boolean doesPhotoExist(String photoName) throws IOException {
+        String command = " find ./ -type f -name '" + photoName + "'";
+        SshCommandResult result = sshCommandExecutor.execute(command);
+
+        return result.stdout().length != 0;
     }
 
     public byte[] viewPhoto(String photoId) throws IOException {

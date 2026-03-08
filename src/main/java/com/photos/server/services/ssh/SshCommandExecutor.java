@@ -22,6 +22,10 @@ public class SshCommandExecutor {
         this.sshSessionManager = sshSessionManager;
     }
 
+    public SshCommandResult execute(String command) throws IOException {
+        return execute(command, null);
+    }
+
     public synchronized SshCommandResult execute(String command, byte[] stdin) throws IOException {
         ClientSession session = sshSessionManager.getActiveSession();
 
