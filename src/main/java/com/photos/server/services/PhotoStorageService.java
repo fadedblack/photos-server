@@ -31,7 +31,7 @@ public class PhotoStorageService {
             return;
         }
 
-        String command = "mkdir -p ~/server-storage && cat > ~/server-storage/" + photoName;
+        String command = "mkdir -p ~/server-storage/test && cat > ~/server-storage/test/" + photoName;
         SshCommandResult result = sshCommandExecutor.execute(command, photo.getImageData());
         if ((result.exitStatus() != null && result.exitStatus() != 0)
                 || !result.stderr().isBlank()) {
@@ -41,7 +41,7 @@ public class PhotoStorageService {
     }
 
     private boolean doesPhotoExist(String photoName) throws IOException {
-        String command = " find ./ -type f -name '" + photoName + "'";
+        String command = "find ./ -type f -name '" + photoName + "'";
         SshCommandResult result = sshCommandExecutor.execute(command);
 
         return result.stdout().length != 0;
@@ -49,7 +49,7 @@ public class PhotoStorageService {
 
     public byte[] viewPhoto(String photoId) throws IOException {
         String safePhotoId = sanitizePhotoName(photoId);
-        String command = "cat ~/server-storage/" + safePhotoId;
+        String command = "find ./ -type f -name \"" + safePhotoId + "\" -exec cat {} +";
         SshCommandResult result = sshCommandExecutor.execute(command, null);
         if ((result.exitStatus() != null && result.exitStatus() != 0)
                 || !result.stderr().isBlank()) {
